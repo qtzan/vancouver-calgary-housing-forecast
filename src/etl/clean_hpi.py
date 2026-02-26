@@ -6,8 +6,8 @@ import pandas as pd
 
 
 def main() -> None:
-    # --- Paths (works no matter where you run the script from) ---
-    BASE_DIR = Path(__file__).resolve().parents[2]  # project root
+    
+    BASE_DIR = Path(__file__).resolve().parents[2]  
     INPUT_PATH = BASE_DIR / "data_raw" / "House_Price_Index.csv"
     OUT_DIR = BASE_DIR / "data_clean"
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -15,13 +15,12 @@ def main() -> None:
     OUT_LONG = OUT_DIR / "hpi_van_cgy_long.csv"
     OUT_WIDE = OUT_DIR / "hpi_van_cgy_wide.csv"
 
-    # --- Load ---
+  
     raw = pd.read_csv(INPUT_PATH)
 
-    # Row 0 contains subheaders like: Index, SA Index, Smoothed..., Sales Pair Count
+   
     subheaders = raw.iloc[0]
 
-    # Build new column names by carrying forward the last "base" city column
     new_cols = []
     base = None
 
@@ -32,7 +31,7 @@ def main() -> None:
             continue
 
         if not str(col).startswith("Unnamed"):
-            base = col  # e.g., bc_vancouver, ab_calgary
+            base = col  
             sub = subheaders[col]
         else:
             sub = subheaders[col]
@@ -42,14 +41,13 @@ def main() -> None:
 
     df = raw.copy()
     df.columns = new_cols
-    df = df.iloc[1:].copy()  # drop the subheader row
+    df = df.iloc[1:].copy()  
 
-    # --- Parse dates (e.g., "Jun-1990") ---
+    
     df["date"] = pd.to_datetime(df["date"], format="%b-%Y", errors="coerce")
     df = df.dropna(subset=["date"])
 
-    # --- Keep only Vancouver + Calgary + required series ---
-    # If you want different series, change these 4 columns:
+   
     keep_cols = [
         "date",
         "bc_vancouver_index",
@@ -58,7 +56,7 @@ def main() -> None:
         "ab_calgary_sa_index",
     ]
 
-    # Make sure the columns exist (fails fast with a helpful message)
+  
     missing = [c for c in keep_cols if c not in df.columns]
     if missing:
         raise KeyError(
@@ -68,20 +66,20 @@ def main() -> None:
 
     df = df[keep_cols].copy()
 
-    # --- Convert numeric columns ---
+  
     for c in keep_cols[1:]:
         df[c] = pd.to_numeric(df[c], errors="coerce")
 
-    # --- Filter to everything from year 2000 onward ---
+   
     df = df[df["date"] >= "2000-01-01"].copy()
 
-    # --- Sort ---
+ 
     df = df.sort_values("date").reset_index(drop=True)
 
-    # --- Save WIDE (optional but useful) ---
+   
     df.to_csv(OUT_WIDE, index=False)
 
-    # --- Create LONG (best for SQL + Tableau) ---
+   
     long_df = df.melt(
         id_vars="date",
         value_vars=["bc_vancouver_sa_index", "ab_calgary_sa_index"],
