@@ -71,7 +71,7 @@ def main() -> None:
         df[c] = pd.to_numeric(df[c], errors="coerce")
 
    
-    df = df[df["date"] >= "2000-01-01"].copy()
+    df = df[df["date"] >= "2010-01-01"].copy()
 
  
     df = df.sort_values("date").reset_index(drop=True)
