@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
+## NEED TO FIX LAST EMPTY ROW 
 BASE_DIR = Path(__file__).resolve().parents[2]
 INPUT_PATH = BASE_DIR / "data_raw" / "Calgary_Pop_Raw.csv"
 OUT_DIR = BASE_DIR / "data_clean"
