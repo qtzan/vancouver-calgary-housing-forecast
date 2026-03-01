@@ -23,6 +23,7 @@ monthly_index = pd.date_range(start="2010-01-01", end="2026-01-01", freq="MS")
 df_monthly = df.reindex(monthly_index).ffill()
 
 
+
 df_monthly = df_monthly.reset_index().rename(columns={"index": "Date"})
 df_monthly["City"] = "Calgary"
 df_monthly = df_monthly[["Date", "City", "Population"]]
