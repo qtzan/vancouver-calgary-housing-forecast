@@ -7,8 +7,10 @@ The goal is to:
 - Compare structural differences between the two markets
 - Quantify the impact of interest, rates, population, and housing supply/demand
 - Forecast housing prices over the next 5 years
+- Try and optimize for more cities 
 
 
 ## Data Sources
 
 All datasets are sourced from public Canadian records.
+
